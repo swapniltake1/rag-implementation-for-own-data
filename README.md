@@ -1,6 +1,6 @@
-# RAG_OPENAI_POC: Retrieval-Augmented Generation with OpenAI API
+# RAG_GEMINI_POC: Retrieval-Augmented Generation with Gemini API
 
-This project demonstrates how to implement Retrieval-Augmented Generation (RAG) using the OpenAI API and your own data. The goal is to learn and apply new skills in data engineering by building a simple RAG pipeline.
+This project demonstrates how to implement Retrieval-Augmented Generation (RAG) using the Gemini API and your own data. The goal is to learn and apply new skills in data engineering by building a simple RAG pipeline.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ This project demonstrates how to implement Retrieval-Augmented Generation (RAG) 
 Retrieval-Augmented Generation (RAG) combines information retrieval with generative models. In this project, you will:
 
 - Index your own data for retrieval.
-- Use the OpenAI API to generate answers based on retrieved context.
+- Use the Gemini API to generate answers based on retrieved context.
 - Learn key concepts in data engineering and NLP.
 
 ---
@@ -28,7 +28,7 @@ Retrieval-Augmented Generation (RAG) combines information retrieval with generat
 ## Prerequisites
 
 - Python 3.8+
-- OpenAI API key
+- Gemini API key
 - Basic knowledge of Python and NLP
 - Required Python packages (see `requirements.txt`)
 
@@ -63,10 +63,10 @@ RAG_POC/
 3. **Prepare your data**
     - Place your documents in the `data/` directory (e.g., `.txt`, `.csv`, `.json`).
 
-4. **Set your OpenAI API key**
+4. **Set your Gemini API key**
     - Export your API key as an environment variable:
       ```bash
-      export OPENAI_API_KEY=your-api-key
+      export GEMINI_API_KEY=your-api-key
       ```
 
 ---
@@ -75,7 +75,7 @@ RAG_POC/
 
 1. **Indexing:** The script processes your data and creates embeddings for efficient retrieval.
 2. **Retrieval:** Given a user query, the system retrieves relevant documents from your dataset.
-3. **Generation:** The retrieved context is sent to the OpenAI API to generate a final answer.
+3. **Generation:** The retrieved context is sent to the Gemini API to generate a final answer.
 
 ---
 
@@ -96,14 +96,13 @@ RAG_POC/
 ## Notes
 
 - Ensure your data is clean and well-formatted for best results.
-- Be mindful of OpenAI API usage limits and costs.
+- Be mindful of Gemini API usage limits and costs.
 - You can experiment with different retrieval and embedding methods.
 
 ---
 
 ## References
 
-- [OpenAI API Documentation](https://platform.openai.com/docs/)
 - [Retrieval-Augmented Generation Paper](https://arxiv.org/abs/2005.11401)
 - [LangChain](https://python.langchain.com/) (optional library for RAG pipelines)
 
