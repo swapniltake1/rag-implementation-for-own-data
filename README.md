@@ -1,111 +1,201 @@
-# Retrieval-Augmented Generation (RAG) with Gemini API
+# RAG with Your Own Data + Local Docker Model Runner
 
-This project demonstrates how to implement Retrieval-Augmented Generation (RAG) using the Gemini API and your own data. The goal is to learn and apply new skills in data engineering by building a simple RAG pipeline.
+This project demonstrates an end-to-end **Retrieval-Augmented Generation (RAG)** workflow using your own documents, Chroma vector storage, Gemini embeddings, and a **local Docker-served LLM** for offline-style inference.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Project Structure](#project-structure)
-- [Setup Instructions](#setup-instructions)
-- [How It Works](#how-it-works)
-- [Usage](#usage)
-- [Notes](#notes)
-- [References](#references)
+It is organized as a practical notebook journey so you can learn each stage step by step, then run question answering against your private knowledge base.
 
 ---
 
-## Overview
+## What This Project Covers
 
-Retrieval-Augmented Generation (RAG) combines information retrieval with generative models. In this project, you will:
+### Core Features
 
-- Index your own data for retrieval.
-- Use the Gemini API to generate answers based on retrieved context.
-- Learn key concepts in data engineering and NLP.
+- Build a RAG pipeline from scratch using your own data.
+- Ingest and chunk both plain text and PDF documents.
+- Generate embeddings with `models/gemini-embedding-2-preview`.
+- Persist vectors in a local Chroma database (`chroma_db/`).
+- Perform similarity search and retrieval over your indexed data.
+- Run an interactive retrieval + answer workflow.
+- Switch generation from cloud to a **local Docker Model Runner** endpoint using an OpenAI-compatible API (`http://localhost:12434/engines/v1`).
 
----
+### Why This Setup Is Useful
 
-## Prerequisites
-
-- Python 3.8+
-- Gemini API key
-- Basic knowledge of Python and NLP
-- Required Python packages (see `requirements.txt`)
+- Your source documents remain in your own environment.
+- Vector database is stored locally and reusable across notebooks.
+- Local model serving reduces dependency on external generation APIs for inference.
+- The notebook flow makes experimentation and learning easier.
 
 ---
 
 ## Project Structure
 
+```text
+rag-implementation-with-own-data/
+├── README.md
+├── pyproject.toml
+├── requirements.txt
+├── main.py
+├── src/
+│   ├── 1.0_RAG_With_Own_Text.ipynb
+│   ├── 2.0_RAG_With_PDF.ipynb
+│   ├── 3.0_Simalirity_Search_VectorDB.ipynb
+│   └── 4.0_Docker_Model_Runner.ipynb
+└── chroma_db/
+    └── ... (persisted vector index)
 ```
-RAG_POC/
-│
-├── data/                # Your custom data files
-├── src/                 # Source code for indexing and retrieval
-├── requirements.txt      # Python dependencies
-└── README.md             # Project documentation
-```
+
+---
+
+## Tech Stack
+
+- **Python**
+- **LangChain** (`langchain`, `langchain-classic`, `langchain-community`)
+- **ChromaDB** (`chromadb`, `langchain-chroma`)
+- **Google GenAI** (`google-genai`, `langchain-google-genai`) for embedding and cloud LLM notebooks
+- **OpenAI-compatible client** (`langchain-openai`) for local Docker model endpoint
+- **PyPDF** for PDF ingestion
+- **Jupyter notebooks** for step-by-step implementation
+
+---
+
+## End-to-End Workflow (What We Did)
+
+Follow the notebooks in order:
+
+### 1) `1.0_RAG_With_Own_Text.ipynb`
+
+- Loaded environment configuration.
+- Initialized Gemini chat model for early testing.
+- Created `Document` objects from custom text data.
+- Split text into chunks using `RecursiveCharacterTextSplitter`.
+- Embedded chunks using `GoogleGenerativeAIEmbeddings`.
+- Saved embeddings to local Chroma (`../chroma_db`).
+
+### 2) `2.0_RAG_With_PDF.ipynb`
+
+- Loaded PDFs with `PyPDFDirectoryLoader`.
+- Split documents into retrieval-ready chunks.
+- Embedded and stored chunks in the same Chroma database.
+- Built retrieval + generation chain with a prompt template.
+- Queried the indexed PDF knowledge through RAG.
+
+### 3) `3.0_Simalirity_Search_VectorDB.ipynb`
+
+- Reopened the persisted Chroma vector store.
+- Performed similarity-based retrieval.
+- Connected retriever with a Gemini chat model.
+- Added interactive query handling via widgets for easier testing.
+
+### 4) `4.0_Docker_Model_Runner.ipynb`
+
+- Reused the **same embedding model and same Chroma store**.
+- Replaced cloud generation model with local Docker-served model:
+  - Model: `ai/qwen3:0.6B-F16`
+  - Base URL: `http://localhost:12434/engines/v1`
+- Built retrieval chain exactly as before.
+- Answered questions using your indexed data with a locally served model backend.
 
 ---
 
 ## Setup Instructions
 
-1. **Clone the repository**
-    ```bash
-    git clone <repo-url>
-    cd RAG_POC
-    ```
+## 1. Clone the repository
 
-2. **Install dependencies**
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+git clone <your-repo-url>
+cd rag-implementation-with-own-data
+```
 
-3. **Prepare your data**
-    - Place your documents in the `data/` directory (e.g., `.txt`, `.csv`, `.json`).
+## 2. Create and activate a Python environment
 
-4. **Set your Gemini API key**
-    - Export your API key as an environment variable:
-      ```bash
-      export GEMINI_API_KEY=your-api-key
-      ```
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
 
----
+## 3. Install dependencies
 
-## How It Works
+Use either `requirements.txt` or `pyproject.toml` workflow.
 
-1. **Indexing:** The script processes your data and creates embeddings for efficient retrieval.
-2. **Retrieval:** Given a user query, the system retrieves relevant documents from your dataset.
-3. **Generation:** The retrieved context is sent to the Gemini API to generate a final answer.
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
-## Usage
+## Environment Variables
 
-1. **Run the indexing script**
-    ```bash
-    python src/index_data.py
-    ```
+Create a `.env` file in the project root:
 
-2. **Ask a question**
-    ```bash
-    python src/query_rag.py "Your question here"
-    ```
+```env
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+> Even when you use a local Docker-served LLM for generation, this project still uses Gemini embeddings for vector creation/loading in current notebooks.
 
 ---
 
-## Notes
+## Running the Notebooks
 
-- Ensure your data is clean and well-formatted for best results.
-- Be mindful of Gemini API usage limits and costs.
-- You can experiment with different retrieval and embedding methods.
+Start Jupyter and execute notebooks in this order:
+
+1. `src/1.0_RAG_With_Own_Text.ipynb`
+2. `src/2.0_RAG_With_PDF.ipynb`
+3. `src/3.0_Simalirity_Search_VectorDB.ipynb`
+4. `src/4.0_Docker_Model_Runner.ipynb`
+
+```bash
+jupyter notebook
+```
 
 ---
 
-## References
+## Docker Model Runner Notes
 
-- [Retrieval-Augmented Generation Paper](https://arxiv.org/abs/2005.11401)
-- [LangChain](https://python.langchain.com/) (optional library for RAG pipelines)
+For the local model notebook (`4.0_Docker_Model_Runner.ipynb`) to work, ensure:
+
+- A Docker-based model runner is running locally.
+- It exposes an OpenAI-compatible endpoint at:
+  - `http://localhost:12434/engines/v1`
+- The selected model (`ai/qwen3:0.6B-F16`) is available in that runner.
+
+If the service is not running, retrieval chain setup will succeed, but answer generation calls will fail.
 
 ---
 
-Happy learning!
+## Data and Privacy Considerations
+
+- Your vector index is stored locally in `chroma_db/`.
+- Only data you load gets indexed.
+- Keep API keys private and never commit `.env`.
+- Review model and API usage policies before production use.
+
+---
+
+## Current Limitations
+
+- Main implementation is notebook-based (not yet packaged as production modules).
+- Embeddings currently depend on Gemini API.
+- Local model quality and latency depend on your hardware/model size.
+- The repository does not include Docker compose files; it assumes a running local model runner endpoint.
+
+---
+
+## Next Improvements
+
+- Add scripted CLI pipeline (`ingest`, `query`, `evaluate`).
+- Add full local embedding option for fully offline operation.
+- Add Docker Compose for one-command local startup.
+- Add automated tests and benchmark notebook outputs.
+
+---
+
+## Quick Summary
+
+This project shows how to:
+
+1. Build a local vector knowledge base from your own text/PDF files.
+2. Retrieve relevant context with similarity search.
+3. Generate final answers with either cloud or local models.
+4. Use Docker-served local models while keeping the same retrieval architecture.
+
