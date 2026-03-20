@@ -199,3 +199,17 @@ This project shows how to:
 3. Generate final answers with either cloud or local models.
 4. Use Docker-served local models while keeping the same retrieval architecture.
 
+## Output of project:
+
+<img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/faa9b141-e2a5-41fc-a023-9d61b93942b8" />
+
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/ee6ae369-29ca-47d3-860f-67fa150c5466" />
+
+<img width="1920" height="2160" alt="image" src="https://github.com/user-attachments/assets/07b249c9-38e5-43c5-8b6f-28ef7916de9b" />
+
+<img width="1920" height="2160" alt="image" src="https://github.com/user-attachments/assets/46d86e5e-7503-476b-addb-b4224a7600d2" />
+
+
+
+
+
