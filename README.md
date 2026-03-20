@@ -1,4 +1,4 @@
-# RAG_GEMINI_POC: Retrieval-Augmented Generation with Gemini API
+# Retrieval-Augmented Generation (RAG) with Gemini API
 
 This project demonstrates how to implement Retrieval-Augmented Generation (RAG) using the Gemini API and your own data. The goal is to learn and apply new skills in data engineering by building a simple RAG pipeline.
 
